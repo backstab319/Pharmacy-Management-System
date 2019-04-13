@@ -114,7 +114,7 @@
 
     <div class="container col-lg-7 col-xl-7 text-justify text-center my-4" id="dev">
         <h1 class="display-4">About Developer</h1>
-        <p class="lead">This project is actively developed by Santhos S of BCA VI Semester 'B' Section.</p>
+        <p class="lead">This project is actively developed by Santhosh S of BCA VI Semester 'B' Section.</p>
     </div>
 
 
