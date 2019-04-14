@@ -18,7 +18,13 @@
                     <div class="navbar-menu ml-auto">
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link" href="index.php">Home</a>
+                                <a class="nav-link" href="medicinestock.php">Stock</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="prescription.php">Prescription</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="pharmacist.php">Home</a>
                             </li>
                         </ul>
                     </div>
