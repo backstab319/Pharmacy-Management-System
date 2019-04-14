@@ -49,9 +49,9 @@
     ?>
 
     <div class="background">
-        <div class="overlay">
-            <div class="d-flex flex-column justify-content-center align-items-center" id="login">
-                <div class="heading">
+        <div class="overlay d-flex flex-column justify-content-center align-items-center">
+            
+                <div class="heading" id="login">
                     <h1 class="display-4">Pharmacy Login</h1>
                 </div>
                 <div class="form-group col-lg-4 col-xl-4">
@@ -89,7 +89,7 @@
                         }
                     }
                 ?>
-            </div>
+            
         </div>
     </div>
 
