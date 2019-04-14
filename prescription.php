@@ -58,10 +58,12 @@
                     </tr>
                     </thead>';
                     while($row = $result->fetch_assoc()){
-                        echo "<tr><td>".$row['med_name']."</td><td>".$row['med_price']."</td><td>".$row['med_description']."</td><td><input type='number' name='".$row['med_name']."quan'></td></tr>";
+                        if($row["quantity"] != 0){
+                            echo "<tr><td>".$row['med_name']."</td><td>".$row['med_price']."</td><td>".$row['med_description']."</td><td><input type='number' name='".$row['med_name']."quan'></td></tr>";
+                        }
                     }
                     echo "</table>
-                        <input type='submit' value='Order' name='order'>
+                        <input type='submit' value='Order' name='order' class='btn btn-outline-primary'>
                         </form>
                     ";
                 }
@@ -72,22 +74,31 @@
                     global $conn;
                     $sql = "SELECT * FROM prescription";
                     $result = $conn->query($sql);
-                    while($row = $result->fetch_assoc()){
-                        $name = $row["med_name"];
-                        $desc = $row["med_description"];
-                        $price = $row["med_price"];
-                        $quantity = $_POST[$name."quan"];
-                        checkstock($name,$quantity);
+                    $row = $result->fetch_assoc();
+                    $name = $row["med_name"];
+                    $desc = $row["med_description"];
+                    $price = $row["med_price"];
+                    $quantity = $_POST[$name."quan"];
+                    checkstock($name,$quantity);
+                    $sql = "SELECT * FROM order_med WHERE med_name='$name'";
+                    $result = $conn->query($sql);
+                    if($result->num_rows > 0){
+                        $row = $result->fetch_assoc();
+                        $newquan = $row["quantity"] + $quantity;
+                        $sql = "UPDATE order_med SET quantity = $newquan WHERE med_name='$name'";
+                        $conn->query($sql);
+                    }else{
                         $sql = "INSERT INTO order_med VALUES('$name','$desc',$price,$quantity)";
                         $conn->query($sql);
                     }
+                    header("Location: prescription.php");
                 }
                 function checkstock($name,$quantity){
                     global $conn;
                     $sql = "SELECT * FROM med_stock WHERE med_name='$name'";
                     $result = $conn->query($sql);
                     $row = $result->fetch_assoc();
-                    if($quantity > $row["quantity"]){
+                    if($quantity >= $row["quantity"]){
                         echo "The inventory is low please choose a smaller quantity!";
                     }else{
                         $newquan = $row["quantity"] - $quantity;
@@ -102,7 +113,7 @@
     <div class="container text-center my-4 col-lg-7 col-xl-7">
         <h1 class="display-4">Clear Prescription</h1>
         <form action="prescription.php" method="POST">
-            <input type="submit" value="Clear" name="clear">
+            <input type="submit" value="Clear" name="clear" class="btn btn-outline-primary">
         </form>
         <?php
             if(isset($_POST["clear"])){
@@ -112,6 +123,7 @@
                 global $conn;
                 $sql = "TRUNCATE TABLE prescription";
                 $conn->query($sql);
+                header("Location: prescription.php");
             }
         ?>
     </div>
@@ -149,6 +161,7 @@
                 }
                 if(isset($_GET["medicine"])){
                     addmed($_GET["medicine"]);
+                    header("Location: prescription.php");
                 }
                 function addmed($medname){
                     global $conn;
@@ -160,8 +173,12 @@
                     $desc = $row["med_description"];
                     $quan = $row["quantity"];
                     if($quan > 0){
-                        $sql = "INSERT INTO prescription VALUES('$name',$price,'$desc',1)";
-                        $conn->query($sql);
+                        $sql = "SELECT * FROM prescription WHERE med_name='$name'";
+                        $result = $conn->query($sql);
+                        if($result->num_rows == 0){
+                            $sql = "INSERT INTO prescription VALUES('$name',$price,'$desc',1)";
+                            $conn->query($sql);
+                        }
                     }else{
                         echo "Inventory low!";
                     }
