@@ -72,7 +72,7 @@
                         $sql = "SELECT * FROM pharmacy_login WHERE user_id = '$username'";
                         $result = $conn->query($sql);
                         $row = $result->fetch_assoc();
-                        if($password = $row["password"]){
+                        if(($password == $row["password"] and $username == $row["user_id"])){
                             setusercookie($username);
                             rediretcuser($row["user_type"]);
                         }
